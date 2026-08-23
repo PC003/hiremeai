@@ -11,3 +11,6 @@ wheels/
 
 # Frontend dependencies
 node_modules/
+.env
+.env.*
+!.env.example
