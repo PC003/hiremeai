@@ -24,6 +24,8 @@ Open `http://localhost:5173`.
 
 Deploy from the `hiremeai` project root. The included `vercel.json` builds the React app from `frontend/`, serves `frontend/dist`, and routes `/api/*` requests to the FastAPI app through `api/index.py`.
 
+Vercel uses Python 3.12 for this project. Keep `.python-version` set to `3.12`. The `uv.lock` file is intentionally ignored for Vercel so dependency installation uses `requirements.txt` instead of a frozen local lock.
+
 Set this Vercel environment variable before deploying:
 
 ```text
