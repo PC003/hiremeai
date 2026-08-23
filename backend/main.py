@@ -201,6 +201,12 @@ def home():
 # chatgpt.cpom
 #chatgot.com/aceeddferre5e new chat
 
+@app.get("/api/health")
+def api_health():
+    return {
+        "status": "ok"
+    }
+
 
 @app.post("/chat")
 def chat(request: ChatRequest):
@@ -217,4 +223,3 @@ def api_chat(request: ChatRequest):
     return {
         "answer": answer
     }
-
