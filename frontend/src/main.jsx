@@ -2,6 +2,8 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { ArrowUp, Bot, BriefcaseBusiness, Loader2, MessageSquareText, Plus, UserRound } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
 import "./styles.css";
 
@@ -15,9 +17,10 @@ const starterQuestions = [
   "Why should we hire this candidate?",
 ];
 
-function normalizeMarkdown(content) {
-  return content.replace(/<br\s*\/?>/gi, "\n");
-}
+const markdownSchema = {
+  ...defaultSchema,
+  tagNames: [...(defaultSchema.tagNames || []), "br"],
+};
 
 function App() {
   const [messages, setMessages] = React.useState([
@@ -157,8 +160,11 @@ function App() {
                 {message.role === "assistant" ? <Bot size={19} /> : <UserRound size={19} />}
               </div>
               <div className="message-bubble">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {normalizeMarkdown(message.content)}
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  rehypePlugins={[rehypeRaw, [rehypeSanitize, markdownSchema]]}
+                >
+                  {message.content}
                 </ReactMarkdown>
               </div>
             </article>

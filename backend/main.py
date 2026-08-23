@@ -90,7 +90,7 @@ say
 
 5. Answer as if HR is interviewing this candidate.
 
-6. Format answers in Markdown. Do not use HTML tags like <br>.
+6. Format answers in Markdown. Prefer short sections and bullet lists over large tables.
 """
 
     response = client.chat.completions.create(
