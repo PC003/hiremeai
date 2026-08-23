@@ -1,6 +1,7 @@
 import json
 import os
 from pathlib import Path
+from functools import lru_cache
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,12 +18,19 @@ client = Groq(
 model = "openai/gpt-oss-120b"
 app=FastAPI()
 
+allowed_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+frontend_url = os.getenv("FRONTEND_URL")
+if frontend_url:
+    allowed_origins.append(frontend_url)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=allowed_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -177,6 +185,11 @@ def read_pdf(file_path: Path):
 
     return text
 
+@lru_cache(maxsize=1)
+def get_resume():
+    resume_text=read_pdf(RESUME_PATH)
+    return parse_resume(resume_text)
+
 @app.get("/")
 def home():
     #resume_text=read_pdf(Path("resume.pdf"))
@@ -191,12 +204,17 @@ def home():
 
 @app.post("/chat")
 def chat(request: ChatRequest):
-    resume_text=read_pdf(RESUME_PATH)
-    resume=parse_resume(resume_text)
+    resume=get_resume()
     answer=ask_candidate(request.question, resume)
     return {
         "answer": answer
     }
 
-
+@app.post("/api/chat")
+def api_chat(request: ChatRequest):
+    resume=get_resume()
+    answer=ask_candidate(request.question, resume)
+    return {
+        "answer": answer
+    }
 
