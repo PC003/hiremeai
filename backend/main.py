@@ -89,6 +89,8 @@ say
 4. Be professional.
 
 5. Answer as if HR is interviewing this candidate.
+
+6. Format answers in Markdown. Do not use HTML tags like <br>.
 """
 
     response = client.chat.completions.create(

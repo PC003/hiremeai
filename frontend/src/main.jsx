@@ -15,6 +15,10 @@ const starterQuestions = [
   "Why should we hire this candidate?",
 ];
 
+function normalizeMarkdown(content) {
+  return content.replace(/<br\s*\/?>/gi, "\n");
+}
+
 function App() {
   const [messages, setMessages] = React.useState([
     {
@@ -153,7 +157,9 @@ function App() {
                 {message.role === "assistant" ? <Bot size={19} /> : <UserRound size={19} />}
               </div>
               <div className="message-bubble">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {normalizeMarkdown(message.content)}
+                </ReactMarkdown>
               </div>
             </article>
           ))}
